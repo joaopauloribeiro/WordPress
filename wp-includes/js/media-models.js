@@ -40,6 +40,8 @@ window.wp = window.wp || {};
 
 		delete attributes.frame;
 
+		media.frame = frame;
+
 		return frame;
 	};
 
@@ -358,7 +360,12 @@ window.wp = window.wp || {};
 
 			if ( attributes.attachment_id ) {
 				this.attachment = Attachment.get( attributes.attachment_id );
-				this.dfd = this.attachment.fetch();
+				if ( this.attachment.get( 'url' ) ) {
+					this.dfd = $.Deferred();
+					this.dfd.resolve();
+				} else {
+					this.dfd = this.attachment.fetch();
+				}
 				this.bindAttachmentListeners();
 			}
 
@@ -367,10 +374,15 @@ window.wp = window.wp || {};
 			this.on( 'change:size', this.updateSize, this );
 
 			this.setLinkTypeFromUrl();
+			this.setAspectRatio();
+
+			this.set( 'originalUrl', attributes.url );
 		},
 
 		bindAttachmentListeners: function() {
 			this.listenTo( this.attachment, 'sync', this.setLinkTypeFromUrl );
+			this.listenTo( this.attachment, 'sync', this.setAspectRatio );
+			this.listenTo( this.attachment, 'change', this.updateSize );
 		},
 
 		changeAttachment: function( attachment, props ) {
@@ -444,68 +456,37 @@ window.wp = window.wp || {};
 				return;
 			}
 
+			if ( this.get( 'size' ) === 'custom' ) {
+				this.set( 'width', this.get( 'customWidth' ) );
+				this.set( 'height', this.get( 'customHeight' ) );
+				this.set( 'url', this.get( 'originalUrl' ) );
+				return;
+			}
+
 			size = this.attachment.get( 'sizes' )[ this.get( 'size' ) ];
+
+			if ( ! size ) {
+				return;
+			}
+
 			this.set( 'url', size.url );
 			this.set( 'width', size.width );
 			this.set( 'height', size.height );
-		}
-	});
-
-	/**
-	 * wp.media.model.PostAudio
-	 *
-	 * @constructor
-	 * @augments Backbone.Model
-	 **/
-	PostAudio = media.model.PostAudio = Backbone.Model.extend({
-		initialize: function() {
-			this.attachment = false;
 		},
 
-		changeAttachment: function( attachment, props ) {
-			var self = this;
+		setAspectRatio: function() {
+			var full;
 
-			this.attachment = attachment;
-			this.extension = attachment.get('filename' ).split('.').pop();
+			if ( this.attachment && this.attachment.get( 'sizes' ) ) {
+				full = this.attachment.get( 'sizes' ).full;
 
-			if ( _.contains( wp.media.view.settings.embedExts, this.extension ) ) {
-				this.set( this.extension, attachment.get( 'url' ) );
-			} else {
-				this.set( this.extension, '' );
+				if ( full ) {
+					this.set( 'aspectRatio', full.width / full.height );
+					return;
+				}
 			}
 
-			_.each( _.without( wp.media.view.settings.embedExts, this.extension ), function (ext) {
-				self.set( ext, '' );
-			} );
-		}
-	});
-
-	/**
-	 * wp.media.model.PostVideo
-	 *
-	 * @constructor
-	 * @augments Backbone.Model
-	 **/
-	PostVideo = media.model.PostVideo = Backbone.Model.extend({
-		initialize: function() {
-			this.attachment = false;
-		},
-
-		changeAttachment: function( attachment, props ) {
-			var self = this;
-
-			this.attachment = attachment;
-			this.extension = attachment.get('filename' ).split('.').pop();
-
-			if ( _.contains( wp.media.view.settings.embedExts, this.extension ) ) {
-				this.set( this.extension, attachment.get( 'url' ) );
-			} else {
-				this.set( this.extension, '' );
-			}
-
-			_.each( _.without( wp.media.view.settings.embedExts, this.extension ), function (ext) {
-				self.set( ext, '' );
-			} );
+			this.set( 'aspectRatio', this.get( 'customWidth' ) / this.get( 'customHeight' ) );
 		}
 	});
 

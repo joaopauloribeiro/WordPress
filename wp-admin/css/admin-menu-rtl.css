@@ -51,69 +51,56 @@
 	transition: all .1s ease-in-out;
 }
 
-.icon16.icon-dashboard:before,
-#adminmenu .menu-icon-dashboard div.wp-menu-image:before {
+.icon16.icon-dashboard:before {
 	content: '\f226';
 }
 
-.icon16.icon-post:before,
-#adminmenu .menu-icon-post div.wp-menu-image:before {
+.icon16.icon-post:before {
 	content: '\f109';
 }
 
-.icon16.icon-media:before,
-#adminmenu .menu-icon-media div.wp-menu-image:before {
+.icon16.icon-media:before {
 	content: '\f104';
 }
 
-.icon16.icon-links:before,
-#adminmenu .menu-icon-links div.wp-menu-image:before {
+.icon16.icon-links:before {
 	content: '\f103';
 }
 
-.icon16.icon-page:before,
-#adminmenu .menu-icon-page div.wp-menu-image:before {
+.icon16.icon-page:before {
 	content: '\f105';
 }
 
-.icon16.icon-comments:before,
-#adminmenu .menu-icon-comments div.wp-menu-image:before {
+.icon16.icon-comments:before {
 	content: '\f101';
 	margin-top: 1px;
 }
 
-.icon16.icon-appearance:before,
-#adminmenu .menu-icon-appearance div.wp-menu-image:before {
+.icon16.icon-appearance:before {
 	content: '\f100';
 }
 
-.icon16.icon-plugins:before,
-#adminmenu .menu-icon-plugins div.wp-menu-image:before {
+.icon16.icon-plugins:before {
 	content: '\f106';
 }
 
-.icon16.icon-users:before,
-#adminmenu .menu-icon-users div.wp-menu-image:before {
+.icon16.icon-users:before {
 	content: '\f110';
 }
 
-.icon16.icon-tools:before,
-#adminmenu .menu-icon-tools div.wp-menu-image:before {
+.icon16.icon-tools:before {
 	content: '\f107';
 }
 
-.icon16.icon-settings:before,
-#adminmenu .menu-icon-settings div.wp-menu-image:before {
+.icon16.icon-settings:before {
 	content: '\f108';
 }
 
-.icon16.icon-site:before,
-#adminmenu .menu-icon-site div.wp-menu-image:before {
+.icon16.icon-site:before {
 	content: '\f112'
 }
 
-.icon16.icon-generic:before,
-#adminmenu .menu-icon-generic div.wp-menu-image:before {
+.icon16.icon-generic:before {
 	content: '\f111';
 }
 
@@ -177,6 +164,15 @@
 	color: #eee;
 }
 
+#adminmenu .wp-submenu a {
+	color: #bbb;
+}
+
+#adminmenu .wp-submenu a:hover,
+#adminmenu .wp-submenu a:focus {
+	background: none;
+}
+
 #adminmenu a:hover,
 #adminmenu li.menu-top > a:focus,
 #adminmenu .wp-submenu a:hover,
@@ -209,17 +205,6 @@
 	box-shadow: 0 3px 5px rgba(0,0,0,0.2);
 }
 
-#adminmenu .wp-submenu a,
-.folded #adminmenu a.wp-has-current-submenu:focus + .wp-submenu a,
-.folded #adminmenu .wp-has-current-submenu .wp-submenu a {
-	color: #bbb;
-}
-
-#adminmenu .wp-submenu a:hover,
-#adminmenu .wp-submenu a:focus {
-	background: none;
-}
-
 .js #adminmenu .sub-open,
 .js #adminmenu .opensub .wp-submenu,
 #adminmenu a.menu-top:focus + .wp-submenu,
@@ -243,6 +228,20 @@
 	-webkit-box-shadow: none;
 	box-shadow: none;
 	background-color: #333;
+}
+
+/* ensure that wp-submenu's box shadow doesn't appear on top of the focused menu item's background. */
+#adminmenu li.menu-top:hover,
+#adminmenu li.opensub > a.menu-top,
+#adminmenu li > a.menu-top:focus {
+	position: relative;
+	background-color: #111;
+}
+
+.folded #adminmenu li.menu-top:hover,
+.folded #adminmenu li.opensub > a.menu-top,
+.folded #adminmenu li > a.menu-top:focus {
+	z-index: 10000;
 }
 
 #adminmenu li.wp-has-current-submenu a.wp-has-current-submenu,
@@ -357,15 +356,8 @@
 }
 
 div.wp-menu-image:before {
-	font: normal 20px/1 'dashicons' !important;
-	speak: none;
 	color: #999;
 	padding: 7px 0;
-	height: 20px;
-	width: 20px;
-	display: inline-block;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
 	-webkit-transition: all .1s ease-in-out;
 	transition: all .1s ease-in-out;
 }
@@ -414,7 +406,7 @@ div.wp-menu-image:before {
 /* Sticky admin menu */
 .sticky-menu #adminmenuwrap {
 	position: fixed;
-	z-index: 99; /* Match the z-index of .wp-submenu to ensure flyout menus don't appear underneath main column elements */
+	z-index: 9999; /* Match the z-index of .wp-submenu to ensure flyout menus don't appear underneath main column elements */
 }
 
 /* A new arrow */
@@ -475,20 +467,6 @@ ul#adminmenu > li.current > a.current:after {
 	border-left-color: #333;
 }
 
-/* ensure that wp-submenu's box shadow doesn't appear on top of the focused menu item's background. */
-#adminmenu li.menu-top:hover,
-#adminmenu li.opensub > a.menu-top,
-#adminmenu li > a.menu-top:focus {
-	position: relative;
-	background-color: #111;
-}
-
-.folded #adminmenu li.menu-top:hover,
-.folded #adminmenu li.opensub > a.menu-top,
-.folded #adminmenu li > a.menu-top:focus {
-	z-index: 10000;
-}
-
 #adminmenu li.menu-top:hover .wp-menu-image img,
 #adminmenu li.wp-has-current-submenu .wp-menu-image img {
 	opacity: 1;
@@ -522,7 +500,7 @@ ul#adminmenu > li.current > a.current:after {
 }
 
 #adminmenu .awaiting-mod,
-#adminmenu span.update-plugins,
+#adminmenu .update-plugins,
 #sidemenu li a span.update-plugins {
 	display: inline-block;
 	background-color: #d54e21;

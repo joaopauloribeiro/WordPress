@@ -37,6 +37,13 @@ final class WP_Customize_Manager {
 	 */
 	protected $previewing = false;
 
+	/**
+	 * Methods and properties deailing with managing widgets in the customizer.
+	 *
+	 * @var WP_Customize_Widgets
+	 */
+	public $widgets;
+
 	protected $settings = array();
 	protected $sections = array();
 	protected $controls = array();
@@ -61,6 +68,9 @@ final class WP_Customize_Manager {
 		require( ABSPATH . WPINC . '/class-wp-customize-setting.php' );
 		require( ABSPATH . WPINC . '/class-wp-customize-section.php' );
 		require( ABSPATH . WPINC . '/class-wp-customize-control.php' );
+		require( ABSPATH . WPINC . '/class-wp-customize-widgets.php' );
+
+		$this->widgets = new WP_Customize_Widgets( $this );
 
 		add_filter( 'wp_die_handler', array( $this, 'wp_die_handler' ) );
 
@@ -180,7 +190,7 @@ final class WP_Customize_Manager {
 	 *
 	 * @since 3.4.0
 	 */
-	function after_setup_theme() {
+	public function after_setup_theme() {
 		if ( ! $this->doing_ajax() && ! validate_current_theme() ) {
 			wp_redirect( 'themes.php?broken=true' );
 			exit;
@@ -213,6 +223,13 @@ final class WP_Customize_Manager {
 			add_filter( 'pre_option_template_root', array( $this, 'get_template_root' ) );
 		}
 
+		/**
+		 * Fires once the Customizer theme preview has started.
+		 *
+		 * @since 3.4.0
+		 *
+		 * @param WP_Customize_Manager $this WP_Customize_Manager instance.
+		 */
 		do_action( 'start_previewing_theme', $this );
 	}
 
@@ -243,6 +260,13 @@ final class WP_Customize_Manager {
 			remove_filter( 'pre_option_template_root', array( $this, 'get_template_root' ) );
 		}
 
+		/**
+		 * Fires once the Customizer theme preview has stopped.
+		 *
+		 * @since 3.4.0
+		 *
+		 * @param WP_Customize_Manager $this WP_Customize_Manager instance.
+		 */
 		do_action( 'stop_previewing_theme', $this );
 	}
 
@@ -307,6 +331,14 @@ final class WP_Customize_Manager {
 	 * @since 3.4.0
 	 */
 	public function wp_loaded() {
+
+		/**
+		 * Fires once WordPress has loaded, allowing scripts and styles to be initialized.
+		 *
+		 * @since 3.4.0
+		 *
+		 * @param WP_Customize_Manager $this WP_Customize_Manager instance.
+		 */
 		do_action( 'customize_register', $this );
 
 		if ( $this->is_preview() && ! is_admin() )
@@ -372,6 +404,14 @@ final class WP_Customize_Manager {
 			$setting->preview();
 		}
 
+		/**
+		 * Fires once the Customizer preview has initialized and JavaScript
+		 * settings have been printed.
+		 *
+		 * @since 3.4.0
+		 *
+		 * @param WP_Customize_Manager $this WP_Customize_Manager instance.
+		 */
 		do_action( 'customize_preview_init', $this );
 	}
 
@@ -535,15 +575,31 @@ final class WP_Customize_Manager {
 			// to operate properly.
 			$this->stop_previewing_theme();
 			switch_theme( $this->get_stylesheet() );
+			update_option( 'theme_switched_via_customizer', true );
 			$this->start_previewing_theme();
 		}
 
+		/**
+		 * Fires once the theme has switched in the Customizer, but before settings
+		 * have been saved.
+		 *
+		 * @since 3.4.0
+		 *
+		 * @param WP_Customize_Manager $this WP_Customize_Manager instance.
+		 */
 		do_action( 'customize_save', $this );
 
 		foreach ( $this->settings as $setting ) {
 			$setting->save();
 		}
 
+		/**
+		 * Fires after Customize settings have been saved.
+		 *
+		 * @since 3.6.0
+		 *
+		 * @param WP_Customize_Manager $this WP_Customize_Manager instance.
+		 */
 		do_action( 'customize_save_after', $this );
 
 		die;
@@ -922,7 +978,6 @@ final class WP_Customize_Manager {
 
 		$locations      = get_registered_nav_menus();
 		$menus          = wp_get_nav_menus();
-		$menu_locations = get_nav_menu_locations();
 		$num_locations  = count( array_keys( $locations ) );
 
 		$this->add_section( 'nav', array(
@@ -1028,7 +1083,7 @@ final class WP_Customize_Manager {
 
 		return $color;
 	}
-};
+}
 
 /**
  * Sanitizes a hex color.

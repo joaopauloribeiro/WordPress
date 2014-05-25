@@ -29,7 +29,7 @@ if ( ! $revision_id )
 	$revision_id = absint( $to );
 $redirect = 'edit.php';
 
-switch ( $action ) :
+switch ( $action ) {
 case 'restore' :
 	if ( ! $revision = wp_get_post_revision( $revision_id ) )
 		break;
@@ -80,7 +80,7 @@ default :
 
 	$redirect = false;
 	break;
-endswitch;
+}
 
 // Empty post_type means either malformed object found, or no valid parent was found.
 if ( ! $redirect && empty( $post->post_type ) )
@@ -117,7 +117,7 @@ get_current_screen()->add_help_tab( array(
 
 $revisions_sidebar  = '<p><strong>' . __( 'For more information:' ) . '</strong></p>';
 $revisions_sidebar .= '<p>' . __( '<a href="http://codex.wordpress.org/Revision_Management" target="_blank">Revisions Management</a>' ) . '</p>';
-$revisions_sidebar .= '<p>' . __( '<a href="http://wordpress.org/support/" target="_blank">Support Forums</a>' ) . '</p>';
+$revisions_sidebar .= '<p>' . __( '<a href="https://wordpress.org/support/" target="_blank">Support Forums</a>' ) . '</p>';
 
 get_current_screen()->set_help_sidebar( $revisions_sidebar );
 

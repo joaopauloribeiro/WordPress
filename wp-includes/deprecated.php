@@ -1916,13 +1916,11 @@ function get_attachment_icon_src( $id = 0, $fullsize = false ) {
 		// We have a thumbnail desired, specified and existing
 
 		$src_file = basename($src);
-		$class = 'attachmentthumb';
 	} elseif ( wp_attachment_is_image( $post->ID ) ) {
 		// We have an image without a thumbnail
 
 		$src = wp_get_attachment_url( $post->ID );
 		$src_file = & $file;
-		$class = 'attachmentimage';
 	} elseif ( $src = wp_mime_type_icon( $post->ID ) ) {
 		// No thumb, no image. We'll look for a mime-related icon instead.
 
@@ -3394,7 +3392,8 @@ function _search_terms_tidy( $t ) {
 /**
  * Determine if TinyMCE is available.
  *
- * Checks to see if the user has deleted the tinymce files to slim down their WordPress install.
+ * Checks to see if the user has deleted the tinymce files to slim down
+ * their WordPress install.
  *
  * @since 2.1.0
  * @deprecated 3.9.0
@@ -3412,15 +3411,6 @@ function rich_edit_exists() {
 }
 
 /**
- * Callback formerly fired on the style_loader_src hook. No longer needed.
- *
- * @since 2.6.0
- * @deprecated 3.9.0
- */
-function wp_style_loader_src() {}
-
-
-/**
  * Old callback for tag link tooltips.
  *
  * @since 2.7.0
@@ -3429,4 +3419,20 @@ function wp_style_loader_src() {}
  */
 function default_topic_count_text( $count ) {
 	return $count;
+}
+
+/**
+ * Formerly used to escape strings before inserting into the DB.
+ *
+ * Has not performed this function for many, many years. Use wpdb::prepare() instead.
+ *
+ * @since 0.71
+ * @deprecated 3.9.0
+ *
+ * @param string $content The text to format.
+ * @return string The very same text.
+ */
+function format_to_post( $content ) {
+	_deprecated_function( __FUNCTION__, '3.9' );
+	return $content;
 }

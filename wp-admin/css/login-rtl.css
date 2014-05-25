@@ -1,4 +1,5 @@
 @import url(forms.css);
+@import url(l10n.css);
 
 html,
 body {
@@ -11,13 +12,41 @@ html {
 	background: #f1f1f1;
 }
 
-body.login {
+body {
 	background: #f1f1f1;
 	min-width: 0;
 	color: #444;
 	font-family: "Open Sans", sans-serif;
 	font-size: 13px;
 	line-height: 1.4em;
+}
+
+a {
+	color: #0074a2;
+	-webkit-transition-property: border, background, color;
+	transition-property: border, background, color;
+	-webkit-transition-duration: .05s;
+	transition-duration: .05s;
+	-webkit-transition-timing-function: ease-in-out;
+	transition-timing-function: ease-in-out;
+}
+
+a {
+	outline: 0;
+}
+
+a:hover,
+a:active {
+	color: #2ea2cc;
+}
+
+a:focus {
+	color: #124964;
+}
+
+a:focus,
+a:active {
+	outline: thin dotted;
 }
 
 p {
